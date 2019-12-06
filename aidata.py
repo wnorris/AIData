@@ -51,7 +51,8 @@ def convert_encoded_tf_example_to_python_dict(encoded_tf_example):
 
 def read_tf_records(filepaths):
   raw_dataset = tf.data.TFRecordDataset(filepaths)
-  return raw_dataset.take(-1)
+  records = raw_dataset.take(-1)
+  return list(map(lambda x: x.numpy(), records))
 
 def write_tf_records(filepath, tf_examples):
   writer = tf.python_io.TFRecordWriter(filepath)
