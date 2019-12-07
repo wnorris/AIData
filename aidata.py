@@ -77,3 +77,12 @@ def write_pickled_python_dicts(filepath, python_dict_array):
   pickle.dump(python_dict_array, f)
   f.close()
 
+def print_python_dicts(python_dicts):
+  if not isinstance(python_dicts, list):
+    python_dicts = [python_dicts]
+  for python_obj in python_dicts:
+    for k, v in python_obj.items():
+      print_type = str(type(v[0]))
+      print_value = list(map(lambda x: (str(x)[:30] + '...') if len(str(x)) > 30 else str(x), v)) 
+      print("{} [{}]: {}".format(k, print_type, print_value))
+
