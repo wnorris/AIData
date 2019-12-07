@@ -5,6 +5,8 @@ from aidata import convert_python_dict_to_encoded_tf_example
 from aidata import convert_encoded_tf_example_to_python_dict
 from aidata import read_tf_records
 from aidata import write_tf_records
+from aidata import read_pickled_python_dicts
+from aidata import write_pickled_python_dicts
 
 
 class TestAIData(unittest.TestCase):
@@ -14,8 +16,9 @@ class TestAIData(unittest.TestCase):
 
     def generate_test_example(self):
         python_dict = {
+          "encoded/image": b"1234567890",
           "image/height": [200], "image/width": [400],
-          "image/object/class/text": ["cat", "dog"],
+          "image/object/class/text": [b"cat", b"dog"],
           "image/object/bbox/xmin": [0.0, 0.8],
           "image/object/bbox/ymin": [0.0, 0.8],
           "image/object/bbox/xmax": [0.2, 1.0],
@@ -27,9 +30,9 @@ class TestAIData(unittest.TestCase):
         self.assertEqual(python_dict["image/height"][0], output_dict["image/height"][0])
         self.assertEqual(python_dict["image/width"][0], output_dict["image/width"][0])
         self.assertEqual(python_dict["image/object/class/text"][0],
-            output_dict["image/object/class/text"][0].decode())
+            output_dict["image/object/class/text"][0])
         self.assertEqual(python_dict["image/object/class/text"][1],
-            output_dict["image/object/class/text"][1].decode())
+            output_dict["image/object/class/text"][1])
         keys = ["image/object/bbox/xmin", "image/object/bbox/xmax", "image/object/bbox/ymin", "image/object/bbox/ymax"]
         for key in keys:
             self.assertAlmostEqual(python_dict[key][0],
@@ -52,6 +55,14 @@ class TestAIData(unittest.TestCase):
         output_dict = convert_encoded_tf_example_to_python_dict(output_tf_examples[0])
         self.verify_python_dicts_equal(python_dict, output_dict)
         os.remove("testdata/tmp_output.record")
+
+    def test_pickled_python_dict_read_and_write(self):
+        python_dict = self.generate_test_example()
+        write_pickled_python_dicts("testdata/tmp_output.pkl", [python_dict, python_dict, python_dict])
+        output_python_dicts = read_pickled_python_dicts(["testdata/tmp_output.pkl"])
+        self.assertEqual([python_dict, python_dict, python_dict], output_python_dicts)
+        self.verify_python_dicts_equal(python_dict, output_python_dicts[0])
+        os.remove("testdata/tmp_output.pkl")
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)

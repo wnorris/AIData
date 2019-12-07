@@ -1,4 +1,5 @@
 import tensorflow as tf
+import pickle
 
 tf.enable_eager_execution()
 
@@ -59,4 +60,18 @@ def write_tf_records(filepath, tf_examples):
   for tf_example in tf_examples:
     writer.write(tf_example)
   writer.close()
+
+def read_pickled_python_dicts(filepaths):
+  full_python_dict_array = []
+  for filepath in filepaths:
+    f = open(filepath, "rb")
+    python_dict_array = pickle.load(f)
+    f.close()
+    full_python_dict_array = full_python_dict_array + python_dict_array
+  return full_python_dict_array
+
+def write_pickled_python_dicts(filepath, python_dict_array):
+  f = open(filepath, "wb")
+  pickle.dump(python_dict_array, f)
+  f.close()
 
