@@ -18,7 +18,7 @@ class TestAIData(unittest.TestCase):
         python_dict = {
           "encoded/image": b"1234567890",
           "image/height": [200], "image/width": [400],
-          "image/object/class/text": [b"cat", b"dog"],
+          "image/object/class/text": ["cat", "dog"],
           "image/object/bbox/xmin": [0.0, 0.8],
           "image/object/bbox/ymin": [0.0, 0.8],
           "image/object/bbox/xmax": [0.2, 1.0],
@@ -29,10 +29,16 @@ class TestAIData(unittest.TestCase):
     def verify_python_dicts_equal(self, python_dict, output_dict):
         self.assertEqual(python_dict["image/height"][0], output_dict["image/height"][0])
         self.assertEqual(python_dict["image/width"][0], output_dict["image/width"][0])
-        self.assertEqual(python_dict["image/object/class/text"][0],
-            output_dict["image/object/class/text"][0])
-        self.assertEqual(python_dict["image/object/class/text"][1],
-            output_dict["image/object/class/text"][1])
+        if isinstance(output_dict["image/object/class/text"][0], str):
+            self.assertEqual(python_dict["image/object/class/text"][0],
+                output_dict["image/object/class/text"][0])
+            self.assertEqual(python_dict["image/object/class/text"][1],
+                output_dict["image/object/class/text"][1])
+        else:
+            self.assertEqual(str.encode(python_dict["image/object/class/text"][0]),
+                output_dict["image/object/class/text"][0])
+            self.assertEqual(str.encode(python_dict["image/object/class/text"][1]),
+                output_dict["image/object/class/text"][1])
         keys = ["image/object/bbox/xmin", "image/object/bbox/xmax", "image/object/bbox/ymin", "image/object/bbox/ymax"]
         for key in keys:
             self.assertAlmostEqual(python_dict[key][0],
