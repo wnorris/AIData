@@ -62,6 +62,8 @@ def write_tf_records(filepath, tf_examples):
   writer.close()
 
 def read_pickled_python_dicts(filepaths):
+  if not isinstance(filepaths, list):
+    filepaths = [filepaths]
   full_python_dict_array = []
   for filepath in filepaths:
     f = open(filepath, "rb")
