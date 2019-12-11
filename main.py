@@ -6,6 +6,7 @@ from aidata import write_tf_records
 from aidata import read_pickled_python_dicts
 from aidata import write_pickled_python_dicts
 from aidata import print_python_dicts
+from aidata import read_pascal_voc
 import pickle
 
 def main():
@@ -22,13 +23,16 @@ def main():
       sys.exit()
     
     input_type = input_split.split(":", 1)[0]
-    input_paths = input_split.split(":", 1)[1].split(",")  
+    input_path = input_split.split(":", 1)[1]
     if input_type == "tfrecord":
-      encoded_tf_examples = read_tf_records(input_paths)
+      encoded_tf_examples = read_tf_records(input_path)
       python_dicts = list(map(convert_encoded_tf_example_to_python_dict, encoded_tf_examples))
       full_python_dicts = full_python_dicts + python_dicts
     elif input_type == "pickle":
-      python_dicts = read_pickled_python_dicts(input_paths)
+      python_dicts = read_pickled_python_dicts(input_path)
+      full_python_dicts = full_python_dicts + python_dicts
+    elif input_type == "pascalvoc":
+      python_dicts = read_pascal_voc(input_path)
       full_python_dicts = full_python_dicts + python_dicts
     else:
       print("Unsupported input type: {}".format(input_type))
