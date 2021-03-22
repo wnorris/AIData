@@ -4,7 +4,7 @@ various formats.
 
 Data formats include "tfrecord" (TF Examples encoded on disk into TF Record
 blocks) and "pickle" which is a list of python dicts in a similar format to TF
-Examples that are encoded do disk using the pickle library.
+Examples that are encoded to disk using the pickle library.
 
 Example python dict declaration:
 {
@@ -16,4 +16,7 @@ Example python dict declaration:
   "image/object/bbox/xmax": [0.2, 1.0],
   "image/object/bbox/ymax": [0.2, 1.0]
 }
+
+Example usage:
+python main.py pickle:dataset.pickle tfrecord:dataset.tfrecord true
 
