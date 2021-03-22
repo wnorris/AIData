@@ -6,8 +6,6 @@ import PIL
 import hashlib
 from lxml import etree
 
-tf.enable_eager_execution()
-
 def _bytes_list_feature(values):
   """Returns a bytes_list from a string / byte."""
   for i in range(len(values)):
@@ -61,7 +59,7 @@ def read_tf_records(filepaths):
   return list(map(lambda x: x.numpy(), records))
 
 def write_tf_records(filepath, tf_examples):
-  writer = tf.python_io.TFRecordWriter(filepath)
+  writer = tf.io.TFRecordWriter(filepath)
   for tf_example in tf_examples:
     writer.write(tf_example)
   writer.close()
